@@ -24,17 +24,34 @@
       acc)))
 
 
-;;my solution
-(defn callmyreverse [coll] (myreverse coll () (count coll)))
-
 (defn myreverse [mylist x n]
   (if (= (count x) n)
     x (recur (rest mylist) (conj x (first mylist)) n))) 
   
+  
+;;my solution
+(defn callmyreverse [coll] (myreverse coll () (count coll)))
+
 ;; Returns a lazy sequence of x, (f x), (f (f x)) etc. f must be free of side-effects
 (take 5 (iterate inc 5))
 (#(take % (map first (iterate (fn [[a b]] [b (+ a b)]) [1 1]))) 5)
-  
+
+;;#(map first (partition-by identity %))
+
+;;awsome version
+(defn compress[x](map first (partition-by identity x)))
+
+(defn docompress [coll compressed] 
+  (cond
+    (empty? coll) compressed
+    (not (.equals (first coll) (second coll)))
+      (recur (rest coll) (concat (conj (second coll) '()) compressed))
+    :else (recur (rest coll) compressed)))
+
+(defn mycompress [coll]
+  (docompress (rest coll) (first coll)))
+
+(mycompress "Leeeeeerrroyyy")
 
 (defn -main
   "I don't do a whole lot ... yet."
